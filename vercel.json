@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/bookment-frontend/package.json",
+      "use": "@vercel/static-build",
+      "options": {
+        "buildCommand": "npm run build",
+        "outputDirectory": "build"
+      }
+    },
+    {
+      "src": "backend/BookMent.Api/Program.cs",
+      "use": "@vercel/build-dotnet",
+      "options": {
+        "project": "backend/BookMent.Api/BookMent.Api.csproj"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/backend/BookMent.Api/Program.cs"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/bookment-frontend/build/$1"
+    }
+  ]
+}

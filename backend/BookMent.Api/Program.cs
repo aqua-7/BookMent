@@ -7,8 +7,20 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Configure DbContext based on environment
+if (builder.Environment.IsProduction())
+{
+    var connectionString = Environment.GetEnvironmentVariable("POSTGRES_URL");
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(connectionString));
+}
+else
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
+
 builder.Services.AddIdentity<ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole>(options =>
 {
     options.Password.RequireNonAlphanumeric = false;
@@ -52,6 +64,13 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowCredentials();
     });
+    options.AddPolicy("VercelPolicy", policy =>
+    {
+        policy.WithOrigins("https://bookment.vercel.app")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -84,9 +103,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("Local");
+}
+else
+{
+    app.UseCors("VercelPolicy");
 }
 
-app.UseCors("Local");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
