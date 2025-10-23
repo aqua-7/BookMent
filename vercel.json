@@ -3,11 +3,7 @@
   "builds": [
     {
       "src": "frontend/bookment-frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "buildCommand": "npm run build",
-        "outputDirectory": "build"
-      }
+      "use": "@vercel/static-build"
     },
     {
       "src": "backend/BookMent.Api/Program.cs",
