@@ -66,10 +66,9 @@ builder.Services.AddCors(options =>
     });
     options.AddPolicy("VercelPolicy", policy =>
     {
-        policy.WithOrigins("https://bookment.vercel.app")
+        policy.AllowAnyOrigin()
               .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+              .AllowAnyMethod();
     });
 });
 
