@@ -4,7 +4,7 @@
     {
       "src": "frontend/bookment-frontend/package.json",
       "use": "@vercel/static-build",
-      "options": {
+      "config": {
         "buildCommand": "npm run build",
         "outputDirectory": "build"
       }
@@ -12,7 +12,7 @@
     {
       "src": "backend/BookMent.Api/Program.cs",
       "use": "@vercel/build-dotnet",
-      "options": {
+      "config": {
         "project": "backend/BookMent.Api/BookMent.Api.csproj"
       }
     }
